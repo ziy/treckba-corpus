@@ -44,7 +44,6 @@ public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
   protected boolean isKept(String body) {
     Set<String> tokens = Sets.newHashSet(body.split("\\s+"));
     if (Sets.intersection(keyterms, tokens).size() > 0) {
-      System.out.println(Sets.intersection(keyterms, tokens));
       return true;
     } else {
       return false;
