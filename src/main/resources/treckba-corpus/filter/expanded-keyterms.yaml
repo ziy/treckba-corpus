@@ -1,0 +1,3 @@
+class: edu.cmu.cs.ziy.courses.expir.treckba.filter.ExpandedKeytermStreamFilter
+lowercase: true
+file: /expanded-keyterms.tsv

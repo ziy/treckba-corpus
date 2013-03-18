@@ -1,0 +1,5 @@
+class: edu.cmu.cs.ziy.courses.expir.treckba.collection.KbaThriftDirCollectionReader
+root: corpus/
+
+persistence-provider: |
+  inherit: treckba-corpus.persistence.local-persistence-provider # db.default-persistence-provider
