@@ -15,8 +15,4 @@ pipeline:
     options: |
       - inherit: treckba-corpus.filter.expanded-keyterms
 
-#  - inherit: ecd.phase # jdbc.sqlite.cse.phase, ecd.phase
-#    name: index
-#    options: |
-#      - inherit: treckba-corpus.index.lucene
-#      - inherit: treckba-corpus.index.indri
+#  - inherit: treckba-corpus.index.solr
