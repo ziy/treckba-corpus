@@ -13,27 +13,36 @@ import com.google.common.io.CharStreams;
 
 public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
 
-  private Set<String> keyterms;
+  private Set<String> keyterms = Sets.newHashSet();
 
   private Boolean lowerCase;
 
+  private Set<String> categories;
+
   @Override
   public void initialize(UimaContext context) throws ResourceInitializationException {
+    super.initialize(context);
     lowerCase = (Boolean) context.getConfigParameterValue("lowercase");
+    categories = Sets.newHashSet((String[]) context.getConfigParameterValue("categories"));
     try {
       String file = (String) context.getConfigParameterValue("file");
       BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(
               file)));
       List<String> lines = CharStreams.readLines(br);
-      keyterms = Sets.newHashSet();
       for (String line : lines) {
-        String keyterm = line.split("\t", 2)[0];
-        keyterm = keyterm.replaceAll("Category:", "");
-        keyterm = keyterm.replaceAll("\\s*\\(.*?\\)\\s*", "");
-        if (lowerCase) {
-          keyterm = keyterm.toLowerCase();
+        String[] fields = line.split("\t");
+        if (fields.length < 4) {
+          continue;
         }
-        keyterms.add(keyterm);
+        String category = fields[2];
+        if (!categories.contains(category)) {
+          continue;
+        }
+        String keyterm = fields[0];
+        keyterm = keyterm.replaceAll("Category:", "");
+        keyterm = keyterm.replaceAll("List of ", "");
+        keyterm = keyterm.replaceAll("\\s*\\(.*?\\)\\s*", "");
+        keyterms.add(lowerCase ? keyterm.toLowerCase() : keyterm);
       }
     } catch (Exception e) {
       throw new ResourceInitializationException(e);
@@ -42,8 +51,9 @@ public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
 
   @Override
   protected boolean isKept(String body) {
-    Set<String> tokens = Sets.newHashSet(body.split("\\s+"));
+    Set<String> tokens = Sets.newHashSet((lowerCase ? body.toLowerCase() : body).split("\\s+"));
     if (Sets.intersection(keyterms, tokens).size() > 0) {
+      System.out.println("{{Target}} " + Sets.intersection(keyterms, tokens));
       return true;
     } else {
       return false;

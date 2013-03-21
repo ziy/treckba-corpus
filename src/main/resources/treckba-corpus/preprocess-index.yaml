@@ -7,12 +7,11 @@ persistence-provider:
 
 collection-reader:
   inherit: treckba-corpus.collection.thrift-dir-reader
-  dir: 2012-04-29-20
   
 pipeline:
-  - inherit: ecd.phase # jdbc.sqlite.cse.phase, ecd.phase
+  - inherit: ecd.phase
     name: filter
     options: |
       - inherit: treckba-corpus.filter.expanded-keyterms
 
-#  - inherit: treckba-corpus.index.solr
+  - inherit: treckba-corpus.index.lucene

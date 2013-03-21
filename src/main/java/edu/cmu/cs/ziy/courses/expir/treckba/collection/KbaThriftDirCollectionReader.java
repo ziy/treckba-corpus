@@ -30,8 +30,7 @@ public final class KbaThriftDirCollectionReader extends IterableCollectionReader
   protected Iterator<DataElement> getInputSet() throws ResourceInitializationException {
     String root = System.getProperty(ROOT_PROPERTY);
     if (root == null) {
-      System.err.printf(
-              "%s property not specified, using 'PathPattern' parameter from configuration\n",
+      System.err.printf("%s property not specified, using 'root' parameter from configuration\n",
               ROOT_PROPERTY);
       root = (String) getConfigParameterValue("root");
     }
@@ -41,17 +40,17 @@ public final class KbaThriftDirCollectionReader extends IterableCollectionReader
               DIR_PROPERTY);
       dir = (String) getConfigParameterValue("dir");
     }
-    String gzipped = System.getProperty(ROOT_PROPERTY);
+    String gzipped = System.getProperty(GZIPPED_PROPERTY);
     if (gzipped == null) {
       System.err.printf(
-              "%s property not specified, using 'LineSyntax' parameter from configuration\n",
+              "%s property not specified, using 'gzipped' parameter from configuration\n",
               GZIPPED_PROPERTY);
       gzipped = (String) getConfigParameterValue("gzipped");
     }
     return new KbaThriftElementIterator(new File(new File(root), dir),
             Boolean.parseBoolean(gzipped));
   }
-  
+
   private final class KbaThriftElementIterator implements Iterator<DataElement> {
 
     private int ptr;

@@ -1,0 +1,6 @@
+class: edu.cmu.cs.ziy.courses.expir.treckba.index.LuceneIndexer
+name: lucene-indexer
+root: index
+
+persistence-provider: |
+  inherit: ecd.default-log-persistence-provider
