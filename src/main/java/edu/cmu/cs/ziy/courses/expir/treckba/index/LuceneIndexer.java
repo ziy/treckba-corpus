@@ -17,12 +17,14 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.uimafit.component.JCasConsumer_ImplBase;
 
+import edu.cmu.lti.oaqa.framework.CasUtils;
+import edu.cmu.lti.oaqa.framework.ViewManager;
+import edu.cmu.lti.oaqa.framework.ViewManager.ViewType;
 import edu.cmu.lti.oaqa.framework.types.OutputElement;
 
 public class LuceneIndexer extends JCasConsumer_ImplBase {
@@ -30,7 +32,7 @@ public class LuceneIndexer extends JCasConsumer_ImplBase {
   private static final String ROOT_PROPERTY = "treckba-corpus.index.root";
 
   private static final String DIR_PROPERTY = "treckba-corpus.index.dir";
-  
+
   private File fullDir;
 
   private IndexWriter writer;
@@ -40,8 +42,7 @@ public class LuceneIndexer extends JCasConsumer_ImplBase {
     super.initialize(context);
     String root = System.getProperty(ROOT_PROPERTY);
     if (root == null) {
-      System.err.printf(
-              "%s property not specified, using 'root' parameter from configuration\n",
+      System.err.printf("%s property not specified, using 'root' parameter from configuration\n",
               ROOT_PROPERTY);
       root = (String) context.getConfigParameterValue("root");
     }
@@ -69,24 +70,30 @@ public class LuceneIndexer extends JCasConsumer_ImplBase {
 
   @Override
   public void process(JCas jcas) throws AnalysisEngineProcessException {
-    AnnotationIndex<Annotation> annotations = jcas.getAnnotationIndex(OutputElement.type);
-    if (annotations.size() < 1) {
+    JCas documentView;
+    try {
+      documentView = ViewManager.getOrCreateView(jcas, ViewType.DOCUMENT);
+    } catch (CASException e) {
+      throw new AnalysisEngineProcessException(e);
+    }
+    OutputElement output = (OutputElement) CasUtils.getFirst(documentView,
+            OutputElement.class.getName());
+    if (output == null) {
       return;
     }
-    OutputElement input = (OutputElement) annotations.iterator().next();
     Document doc = new Document();
-    doc.add(new StringField("stream-id", input.getSequenceId(), Field.Store.YES));
-    doc.add(new TextField("body", input.getAnswer(), Field.Store.YES));
-    // doc.add(new TextField("body-index", input.getQuestion(), Field.Store.NO));
-    // doc.add(new StoredField("body-store", CompressionTools.compressString(input.getQuestion(),
+    doc.add(new StringField("stream-id", output.getSequenceId(), Field.Store.YES));
+    doc.add(new TextField("body", output.getAnswer(), Field.Store.YES));
+    // doc.add(new TextField("body-index", output.getQuestion(), Field.Store.NO));
+    // doc.add(new StoredField("body-store", CompressionTools.compressString(output.getQuestion(),
     // Deflater.BEST_COMPRESSION)));
     try {
       writer.addDocument(doc);
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new AnalysisEngineProcessException(e);
     }
   }
-  
+
   @Override
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     super.collectionProcessComplete();

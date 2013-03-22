@@ -1,5 +1,5 @@
 class: edu.cmu.cs.ziy.courses.expir.treckba.filter.ExpandedKeytermStreamFilter
-file: /expanded-keyterms.tsv
+file: /treckba-corpus/filter/expanded-keyterms.tsv
 lowercase: true
 categories: [ORIGINAL, REDIRECT, CATEGORY, INLINK, OUTLINK, INLINK_ANCHOR, OUTLINK_ANCHOR, BOLDTEXT]
 
