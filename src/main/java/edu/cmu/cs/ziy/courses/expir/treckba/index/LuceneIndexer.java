@@ -25,6 +25,7 @@ import org.uimafit.component.JCasConsumer_ImplBase;
 import edu.cmu.lti.oaqa.framework.CasUtils;
 import edu.cmu.lti.oaqa.framework.ViewManager;
 import edu.cmu.lti.oaqa.framework.ViewManager.ViewType;
+import edu.cmu.lti.oaqa.framework.types.InputElement;
 import edu.cmu.lti.oaqa.framework.types.OutputElement;
 
 public class LuceneIndexer extends JCasConsumer_ImplBase {
@@ -76,13 +77,16 @@ public class LuceneIndexer extends JCasConsumer_ImplBase {
     } catch (CASException e) {
       throw new AnalysisEngineProcessException(e);
     }
+    InputElement input = (InputElement) CasUtils.getFirst(jcas, InputElement.class.getName());
     OutputElement output = (OutputElement) CasUtils.getFirst(documentView,
             OutputElement.class.getName());
     if (output == null) {
       return;
     }
     Document doc = new Document();
+    System.out.print(input.getSequenceId() + " " + input.getDataset());
     doc.add(new StringField("stream-id", output.getSequenceId(), Field.Store.YES));
+    doc.add(new StringField("source", input.getQuuid(), Field.Store.YES));
     doc.add(new TextField("body", output.getAnswer(), Field.Store.YES));
     // doc.add(new TextField("body-index", output.getQuestion(), Field.Store.NO));
     // doc.add(new StoredField("body-store", CompressionTools.compressString(output.getQuestion(),

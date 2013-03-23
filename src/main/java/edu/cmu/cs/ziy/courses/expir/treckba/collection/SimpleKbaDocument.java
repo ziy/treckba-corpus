@@ -10,10 +10,14 @@ public class SimpleKbaDocument {
 
   private String streamId;
 
+  private String source;
+
   private String body;
 
   public SimpleKbaDocument(StreamItem doc) {
     streamId = doc.stream_id;
+    source = doc.source;
+    // source = doc.source;
     if (doc.body.cleansed != null && doc.body.encoding != null) {
       Charset charset = null;
       try {
@@ -50,6 +54,10 @@ public class SimpleKbaDocument {
     return streamId;
   }
 
+  public String getSource() {
+    return source;
+  }
+
   public String getBody() {
     return body;
   }
@@ -58,7 +66,6 @@ public class SimpleKbaDocument {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((body == null) ? 0 : body.hashCode());
     result = prime * result + ((streamId == null) ? 0 : streamId.hashCode());
     return result;
   }
@@ -72,11 +79,6 @@ public class SimpleKbaDocument {
     if (getClass() != obj.getClass())
       return false;
     SimpleKbaDocument other = (SimpleKbaDocument) obj;
-    if (body == null) {
-      if (other.body != null)
-        return false;
-    } else if (!body.equals(other.body))
-      return false;
     if (streamId == null) {
       if (other.streamId != null)
         return false;
