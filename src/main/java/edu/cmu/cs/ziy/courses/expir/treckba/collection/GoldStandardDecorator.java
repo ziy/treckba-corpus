@@ -23,7 +23,7 @@ import edu.cmu.lti.oaqa.framework.ViewManager.ViewType;
 import edu.cmu.lti.oaqa.framework.types.InputElement;
 import edu.cmu.lti.oaqa.framework.types.OutputElement;
 
-public class KbaGoldStandardDecorator extends JCasAnnotator_ImplBase {
+public class GoldStandardDecorator extends JCasAnnotator_ImplBase {
 
   private static final String GSPATH_PROPERTY = "treckba-corpus.collection.gspath";
 

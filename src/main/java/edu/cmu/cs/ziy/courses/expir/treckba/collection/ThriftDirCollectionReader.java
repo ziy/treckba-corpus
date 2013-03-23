@@ -18,7 +18,7 @@ import com.google.common.io.PatternFilenameFilter;
 import edu.cmu.lti.oaqa.framework.DataElement;
 import edu.cmu.lti.oaqa.framework.collection.IterableCollectionReader;
 
-public final class KbaThriftDirCollectionReader extends IterableCollectionReader {
+public final class ThriftDirCollectionReader extends IterableCollectionReader {
 
   private static final String ROOT_PROPERTY = "treckba-corpus.collection.root";
 
@@ -105,7 +105,7 @@ public final class KbaThriftDirCollectionReader extends IterableCollectionReader
       }
       nextCalled = true;
       SimpleKbaDocument doc = new SimpleKbaDocument(item);
-      return new DataElement(getDataset(), doc.getStreamId(), doc.getBody(), null);
+      return new DataElement(null, doc.getStreamId(), doc.getBody(), doc.getSource());
     }
 
     @Override

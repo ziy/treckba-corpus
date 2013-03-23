@@ -1,4 +1,4 @@
-class: edu.cmu.cs.ziy.courses.expir.treckba.collection.KbaThriftDirCollectionReader
+class: edu.cmu.cs.ziy.courses.expir.treckba.collection.ThriftDirCollectionReader
 root: corpus/
 
 decorators: |
