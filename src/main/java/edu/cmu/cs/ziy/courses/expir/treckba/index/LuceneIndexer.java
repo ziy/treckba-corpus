@@ -10,6 +10,8 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
@@ -103,7 +105,9 @@ public class LuceneIndexer extends JCasConsumer_ImplBase {
     super.collectionProcessComplete();
     try {
       writer.close();
-      System.out.println("Index folder size: " + FileUtils.sizeOfDirectory(fullDir));
+      IndexReader reader = DirectoryReader.open(FSDirectory.open(fullDir));
+      System.out.println("Index folder size: " + FileUtils.sizeOfDirectory(fullDir) + " with "
+              + reader.numDocs() + " documents");
     } catch (IOException e) {
       throw new AnalysisEngineProcessException(e);
     }
