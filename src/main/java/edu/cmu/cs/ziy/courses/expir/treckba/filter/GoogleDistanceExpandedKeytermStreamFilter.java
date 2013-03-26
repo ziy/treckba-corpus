@@ -16,11 +16,11 @@ import com.google.common.io.CharStreams;
 
 import edu.cmu.cs.ziy.util.PhraseCollectionMentionChecker;
 
-public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
+public class GoogleDistanceExpandedKeytermStreamFilter extends AbstractStreamFilter {
 
-  protected Boolean lowerCase;
+  private Boolean lowerCase;
 
-  protected PhraseCollectionMentionChecker checker;
+  private PhraseCollectionMentionChecker checker;
 
   @Override
   public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -28,11 +28,16 @@ public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
     lowerCase = (Boolean) context.getConfigParameterValue("lowercase");
     HashSet<String> categories = Sets.newHashSet((String[]) context
             .getConfigParameterValue("categories"));
+    String expandedKeytermFile = (String) context.getConfigParameterValue("expanded-keyterm-file");
+    String accumulatedBingDistanceFile = (String) context
+            .getConfigParameterValue("accumulated-google-distance-file");
+    int column = (Integer) context.getConfigParameterValue("column");
+    float threshold = (Float) context.getConfigParameterValue("threshold");
+
     Set<String> keyterms = Sets.newHashSet();
     try {
-      String file = (String) context.getConfigParameterValue("file");
       BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(
-              file)));
+              expandedKeytermFile)));
       List<String> lines = CharStreams.readLines(br);
       for (String line : lines) {
         String[] fields = line.split("\t");
@@ -48,6 +53,15 @@ public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
         keyterm = keyterm.replaceAll("List of ", "");
         keyterm = keyterm.replaceAll("\\s*\\(.*?\\)\\s*", "");
         keyterms.add(lowerCase ? keyterm.toLowerCase() : keyterm);
+      }
+      br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(
+              accumulatedBingDistanceFile)));
+      lines = CharStreams.readLines(br);
+      for (String line : lines) {
+        String[] fields = line.split("\t");
+        if (Float.parseFloat(fields[column]) > threshold) {
+          keyterms.remove(lowerCase ? fields[0].toLowerCase() : fields[0]);
+        }
       }
       checker = new PhraseCollectionMentionChecker(keyterms, Splitter
               .on(CharMatcher.anyOf("\" ();,.'[]{}!?:”“…\n\r\t]")).trimResults().omitEmptyStrings());

@@ -12,7 +12,8 @@ pipeline:
   - inherit: ecd.phase
     name: filter
     options: |
-      - inherit: treckba-corpus.filter.expanded-keyterms
+      # - inherit: treckba-corpus.filter.expanded-keyterms
+      - inherit: treckba-corpus.filter.google-distance-expanded-keyterms
 
   - inherit: treckba-corpus.eval.trace-evaluator-aggregator
   
