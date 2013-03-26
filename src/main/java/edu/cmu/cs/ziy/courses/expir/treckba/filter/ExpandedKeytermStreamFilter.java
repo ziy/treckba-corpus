@@ -50,8 +50,7 @@ public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
         keyterms.add(lowerCase ? keyterm.toLowerCase() : keyterm);
       }
       checker = new PhraseCollectionMentionChecker(keyterms, Splitter
-              .on(CharMatcher.anyOf("\" ();,.'[]{}!?:”“…\\n\\r\\t]")).trimResults()
-              .omitEmptyStrings());
+              .on(CharMatcher.anyOf("\" ();,.'[]{}!?:”“…\n\r\t]")).trimResults().omitEmptyStrings());
     } catch (Exception e) {
       throw new ResourceInitializationException(e);
     }

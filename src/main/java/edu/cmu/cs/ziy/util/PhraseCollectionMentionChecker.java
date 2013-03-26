@@ -122,8 +122,8 @@ public class PhraseCollectionMentionChecker {
 
   public static void main(String[] args) {
     Set<String> phraseStrings = Sets.newHashSet(new String[] { "a", "a.b.c", "c", "a a" });
-    Splitter splitter = Splitter.on(CharMatcher.anyOf("\" ();,.'[]{}!?:”“…\\n\\r\\t]"))
-            .trimResults().omitEmptyStrings();
+    Splitter splitter = Splitter.on(CharMatcher.anyOf("\" ();,.'[]{}!?:”“…\n\r\t]")).trimResults()
+            .omitEmptyStrings();
     PhraseCollectionMentionChecker checker = new PhraseCollectionMentionChecker(phraseStrings,
             splitter);
     Set<String> results = checker.checkDocument("b c");
