@@ -86,7 +86,6 @@ public class LuceneIndexer extends JCasConsumer_ImplBase {
       return;
     }
     Document doc = new Document();
-    System.out.print(input.getSequenceId() + " " + input.getDataset());
     doc.add(new StringField("stream-id", output.getSequenceId(), Field.Store.YES));
     doc.add(new StringField("source", input.getQuuid(), Field.Store.YES));
     doc.add(new TextField("body", output.getAnswer(), Field.Store.YES));

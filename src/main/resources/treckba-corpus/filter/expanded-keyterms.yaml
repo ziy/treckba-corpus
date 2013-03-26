@@ -1,7 +1,8 @@
 class: edu.cmu.cs.ziy.courses.expir.treckba.filter.ExpandedKeytermStreamFilter
 file: /treckba-corpus/filter/expanded-keyterms.tsv
-lowercase: true
+lowercase: false # true, false
 categories: [ORIGINAL, REDIRECT, CATEGORY, INLINK, OUTLINK, INLINK_ANCHOR, OUTLINK_ANCHOR, BOLDTEXT]
+#  [ORIGINAL, REDIRECT, CATEGORY, INLINK, INLINK_ANCHOR, BOLDTEXT]
 
 persistence-provider: |
   inherit: ecd.default-log-persistence-provider
