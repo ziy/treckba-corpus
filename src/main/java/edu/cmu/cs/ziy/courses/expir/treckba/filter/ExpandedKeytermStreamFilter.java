@@ -2,28 +2,33 @@ package edu.cmu.cs.ziy.courses.expir.treckba.filter;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import com.google.common.io.CharStreams;
 
-public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
+import edu.cmu.cs.ziy.util.PhraseCollectionMentionChecker;
 
-  private Set<String> keyterms = Sets.newHashSet();
+public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
 
   private Boolean lowerCase;
 
-  private Set<String> categories;
+  private PhraseCollectionMentionChecker checker;
 
   @Override
   public void initialize(UimaContext context) throws ResourceInitializationException {
     super.initialize(context);
     lowerCase = (Boolean) context.getConfigParameterValue("lowercase");
-    categories = Sets.newHashSet((String[]) context.getConfigParameterValue("categories"));
+    HashSet<String> categories = Sets.newHashSet((String[]) context
+            .getConfigParameterValue("categories"));
+    Set<String> keyterms = Sets.newHashSet();
     try {
       String file = (String) context.getConfigParameterValue("file");
       BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(
@@ -44,6 +49,9 @@ public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
         keyterm = keyterm.replaceAll("\\s*\\(.*?\\)\\s*", "");
         keyterms.add(lowerCase ? keyterm.toLowerCase() : keyterm);
       }
+      checker = new PhraseCollectionMentionChecker(keyterms, Splitter
+              .on(CharMatcher.anyOf("\" ();,.'[]{}!?:”“…\\n\\r\\t]")).trimResults()
+              .omitEmptyStrings());
     } catch (Exception e) {
       throw new ResourceInitializationException(e);
     }
@@ -51,9 +59,9 @@ public class ExpandedKeytermStreamFilter extends AbstractStreamFilter {
 
   @Override
   protected boolean isKept(String body) {
-    Set<String> tokens = Sets.newHashSet((lowerCase ? body.toLowerCase() : body).split("\\s+"));
-    if (Sets.intersection(keyterms, tokens).size() > 0) {
-      System.out.println("{{Target}} " + Sets.intersection(keyterms, tokens));
+    Set<String> phrases = checker.checkDocument(lowerCase ? body.toLowerCase() : body);
+    if (phrases != null && !phrases.isEmpty()) {
+      System.out.println("{{Target}} " + phrases);
       return true;
     } else {
       return false;
