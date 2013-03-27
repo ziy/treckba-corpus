@@ -1,0 +1,12 @@
+class: edu.cmu.cs.ziy.courses.expir.treckba.filter.GoogleDistanceExpandedKeytermStreamFilter
+# basic expanded parameters
+expanded-keyterm-file: /treckba-corpus/filter/expanded-keyterms.tsv
+lowercase: false
+categories: [ORIGINAL, REDIRECT, CATEGORY, INLINK, INLINK_ANCHOR, OUTLINK, BOLDTEXT]
+# google distance related
+accumulated-google-distance-file: /treckba-corpus/filter/accumulated-bing-distance.tsv
+column: 5 # 1, 3, 5
+threshold: 1.5 # 0.5, 1.0, 1.5, 2.0, 3.0, 4.0
+
+persistence-provider: |
+  inherit: ecd.default-log-persistence-provider

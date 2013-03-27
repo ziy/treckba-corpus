@@ -1,5 +1,12 @@
-inherit: jdbc.sqlite.db.experiment-persistence-provider
-url: jdbc:sqlite:data/oaqa-eval.db3
+class: edu.cmu.cs.ziy.courses.expir.treckba.persistence.SystemPropertyAwareJdbcExperimentPersistenceProvider
 driver: org.sqlite.JDBC
 username: admin
 password: admin
+insert-experiment-query: |
+  INSERT OR IGNORE INTO EXPERIMENT (id,name,author,configuration,resource)
+  VALUES (?,?,?,?,?)
+update-experiment-meta-query: UPDATE experiment SET size = ? WHERE id = ?
+update-experiment-topics-query: UPDATE experiment SET size = ?, sequenceIds = ? WHERE id = ?
+
+experiments: |
+  SELECT id, name, author, date, size FROM experiment ORDER BY date DESC
