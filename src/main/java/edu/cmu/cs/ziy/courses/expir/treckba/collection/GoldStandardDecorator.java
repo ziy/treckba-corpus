@@ -1,8 +1,8 @@
 package edu.cmu.cs.ziy.courses.expir.treckba.collection;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UimaContext;
@@ -12,10 +12,11 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
-import com.google.common.io.CharStreams;
+import com.google.common.io.Resources;
 
 import edu.cmu.lti.oaqa.framework.CasUtils;
 import edu.cmu.lti.oaqa.framework.ViewManager;
@@ -36,27 +37,23 @@ public class GoldStandardDecorator extends JCasAnnotator_ImplBase {
   @Override
   public void initialize(UimaContext context) throws ResourceInitializationException {
     super.initialize(context);
-    String gsPath = System.getProperty(GSPATH_PROPERTY);
-    if (gsPath == null) {
-      System.err.printf("%s property not specified, using 'gspath' parameter from configuration\n",
-              GSPATH_PROPERTY);
-      gsPath = (String) context.getConfigParameterValue("gspath");
-    }
-    BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(
-            gsPath)));
+    String gsPath = Objects.firstNonNull(System.getProperty(GSPATH_PROPERTY),
+            (String) context.getConfigParameterValue("gspath"));
+    List<String> lines;
     try {
-      for (String line : Collections2.filter(CharStreams.readLines(br),
-              Predicates.containsPattern("^[^#]"))) {
-        String[] segs = line.split("\t");
-        String relevance = segs[5];
-        if (!relevance.equals("1") && !relevance.equals("2")) {
-          continue;
-        }
-        streamId2relevance.put(segs[2], relevance.equals("1") ? Relevance.RELEVANT
-                : Relevance.CENTRAL);
-      }
+      lines = Resources.readLines(Resources.getResource(getClass(), gsPath),
+              Charset.defaultCharset());
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new ResourceInitializationException(e);
+    }
+    for (String line : Collections2.filter(lines, Predicates.containsPattern("^[^#]"))) {
+      String[] segs = line.split("\t");
+      String relevance = segs[5];
+      if (!relevance.equals("1") && !relevance.equals("2")) {
+        continue;
+      }
+      streamId2relevance.put(segs[2], relevance.equals("1") ? Relevance.RELEVANT
+              : Relevance.CENTRAL);
     }
   }
 

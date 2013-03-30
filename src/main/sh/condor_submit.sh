@@ -17,6 +17,7 @@ JOB=$JOB_ROOT/$DIR.job
 echo "universe = vanilla" > $JOB
 echo "executable = $PROJECT_HOME/src/main/sh/condor_executable.sh" >> $JOB
 echo "arguments = $JAVA_HOME $MAVEN_BIN $PROJECT_HOME $CORPUS_ROOT $DIR" >> $JOB
+echo "transfer_input_files = $DATA_ROOT/$DIR.db3"
 echo "log = $LOG_ROOT/$DIR.condor" >> $JOB
 echo "output = $LOG_ROOT/$DIR.log" >> $JOB
 echo "error = $LOG_ROOT/$DIR.err" >> $JOB

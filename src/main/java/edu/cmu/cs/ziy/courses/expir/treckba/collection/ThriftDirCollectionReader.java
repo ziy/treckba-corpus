@@ -13,6 +13,7 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TIOStreamTransport;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import com.google.common.base.Objects;
 import com.google.common.io.PatternFilenameFilter;
 
 import edu.cmu.lti.oaqa.framework.DataElement;
@@ -28,25 +29,12 @@ public final class ThriftDirCollectionReader extends IterableCollectionReader {
 
   @Override
   protected Iterator<DataElement> getInputSet() throws ResourceInitializationException {
-    String root = System.getProperty(ROOT_PROPERTY);
-    if (root == null) {
-      System.err.printf("%s property not specified, using 'root' parameter from configuration\n",
-              ROOT_PROPERTY);
-      root = (String) getConfigParameterValue("root");
-    }
-    String dir = System.getProperty(DIR_PROPERTY);
-    if (dir == null) {
-      System.err.printf("%s property not specified, using 'dir' parameter from configuration\n",
-              DIR_PROPERTY);
-      dir = (String) getConfigParameterValue("dir");
-    }
-    String gzipped = System.getProperty(GZIPPED_PROPERTY);
-    if (gzipped == null) {
-      System.err.printf(
-              "%s property not specified, using 'gzipped' parameter from configuration\n",
-              GZIPPED_PROPERTY);
-      gzipped = (String) getConfigParameterValue("gzipped");
-    }
+    String root = Objects.firstNonNull(System.getProperty(ROOT_PROPERTY),
+            (String) getConfigParameterValue("root"));
+    String dir = Objects.firstNonNull(System.getProperty(DIR_PROPERTY),
+            dir = (String) getConfigParameterValue("dir"));
+    String gzipped = Objects.firstNonNull(System.getProperty(GZIPPED_PROPERTY),
+            (String) getConfigParameterValue("gzipped"));
     return new KbaThriftElementIterator(new File(new File(root), dir),
             Boolean.parseBoolean(gzipped));
   }
