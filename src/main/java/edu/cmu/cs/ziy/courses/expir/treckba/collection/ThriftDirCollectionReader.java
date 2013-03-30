@@ -25,18 +25,13 @@ public final class ThriftDirCollectionReader extends IterableCollectionReader {
 
   private static final String DIR_PROPERTY = "treckba-corpus.collection.dir";
 
-  private static final String GZIPPED_PROPERTY = "treckba-corpus.collection.gzipped";
-
   @Override
   protected Iterator<DataElement> getInputSet() throws ResourceInitializationException {
     String root = Objects.firstNonNull(System.getProperty(ROOT_PROPERTY),
             (String) getConfigParameterValue("root"));
     String dir = Objects.firstNonNull(System.getProperty(DIR_PROPERTY),
             dir = (String) getConfigParameterValue("dir"));
-    String gzipped = Objects.firstNonNull(System.getProperty(GZIPPED_PROPERTY),
-            (String) getConfigParameterValue("gzipped"));
-    return new KbaThriftElementIterator(new File(new File(root), dir),
-            Boolean.parseBoolean(gzipped));
+    return new KbaThriftElementIterator(new File(new File(root), dir));
   }
 
   private final class KbaThriftElementIterator implements Iterator<DataElement> {
@@ -51,7 +46,7 @@ public final class ThriftDirCollectionReader extends IterableCollectionReader {
 
     private TProtocol protocol;
 
-    public KbaThriftElementIterator(File dir, boolean gzipped) {
+    public KbaThriftElementIterator(File dir) {
       this.ptr = -1;
       this.files = dir.listFiles(new PatternFilenameFilter(".*\\.gz"));
     }
