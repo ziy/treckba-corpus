@@ -1,4 +1,4 @@
-class: edu.cmu.cs.ziy.courses.expir.treckba.eval.TraceEvaluatorAggregator
+class: edu.cmu.cs.ziy.courses.expir.treckba.eval.CorpusPreprocessingTraceEvaluatorAggregator
 name: trace-evaluator-aggregator  
 
 aggregators: |

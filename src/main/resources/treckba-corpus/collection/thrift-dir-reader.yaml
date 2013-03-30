@@ -2,7 +2,7 @@ class: edu.cmu.cs.ziy.courses.expir.treckba.collection.ThriftDirCollectionReader
 root: corpus/
 
 decorators: |
-  - inherit: treckba-corpus.collection.gs-decorator
+  - inherit: treckba-corpus.collection.corpus-preprocessing-gs-decorator
 
 persistence-provider: |
   inherit: treckba-corpus.persistence.local-persistence-provider # db.default-persistence-provider

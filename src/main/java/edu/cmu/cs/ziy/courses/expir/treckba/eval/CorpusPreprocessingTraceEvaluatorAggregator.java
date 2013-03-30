@@ -15,7 +15,7 @@ import edu.cmu.lti.oaqa.framework.ViewManager.ViewType;
 import edu.cmu.lti.oaqa.framework.eval.retrieval.RetrievalEvalConsumer;
 import edu.cmu.lti.oaqa.framework.types.OutputElement;
 
-public class TraceEvaluatorAggregator extends RetrievalEvalConsumer<OutputElement> {
+public class CorpusPreprocessingTraceEvaluatorAggregator extends RetrievalEvalConsumer<OutputElement> {
 
   @Override
   protected Ordering<OutputElement> getOrdering() {
